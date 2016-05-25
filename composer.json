@@ -1,0 +1,30 @@
+{
+    "name": "ohtarr/E911",
+    "type": "library",
+    "description": "PHP E911 Library",
+    "keywords": [
+        "php5",
+        "E911",
+	"EGW"
+        ],
+    "homepage": "http://github.com/ohtarr/E911",
+    "license": "LGPL3.0",
+    "authors": [
+        {
+            "name": "Ohtarr",
+            "email": "ohtarr@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {
+            "ohtarr\\": "lib"
+        }
+    }
+}
