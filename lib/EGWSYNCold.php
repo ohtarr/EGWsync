@@ -23,6 +23,7 @@
  * @category  default
  *
  * @author    Andrew Jones
+ * @author    Travis Riesenberg
  * @copyright 2016 @authors
  * @license   http://www.gnu.org/copyleft/lesser.html The GNU LESSER GENERAL PUBLIC LICENSE, Version 3.0
  */
@@ -30,48 +31,19 @@ namespace ohtarr;
 
 class EGWSYNC
 {
-	public $NM_SWITCHES;		//array of switches from Network Management Platform
-	public $NM_ELINS;			//array of elins from Network Management Platform
+	public $NM_SWITCHES;		//array of switches from netman
+	public $NM_ELINS;			//array of elins from netman
 	public $E911_SWITCHES;		//array of switches from e911 appliance
 	public $E911_ERLS;			//array of ERLs from e911 appliance
 	public $SNOW_LOCS;			//array of locations from SNOW
 
     public function __construct()
 	{
-		$this->NM_SWITCHES = $this->Netman_get_switches();		//populate array of switches from Network Management Platform
+		$this->NM_SWITCHES = $this->Netman_get_switches();		//populate array of switches from Netman]
 		$this->E911_SWITCHES = $this->E911_get_switches();		//populate array of switches from E911 Appliance
 		$this->E911_ERLS = $this->E911_get_erls();				//populate list of ERLs from E911 Appliance
 		$this->SNOW_LOCS = $this->Snow_get_valid_locations();	//populate a list of locations from SNOW
-		$this->NM_ELINS = $this->NM_get_elins();				//populate a list of elins from Network Management Platform
-	}
-
-	/*
-	Hit a reporting API to log all automation tasks.
-	$params format:
-							[	"origin_hostname"	=>	"test",
-								"processname"		=>	"tester",
-								"category"			=>	"Network",
-								"timesaved"			=>	"2",
-								"datestarted"		=>	"2016-05-26 09:34:00.000",
-								"datefinished"		=>	"2016-05-26 09:35:00.000",
-								"success"			=>	"1",
-					//			"target_hostname"	=>	"1",	//optional
-					//			"triggeredby"		=>	test,	//optional
-					//			"description"		=>	test,	//optional
-					//			"target_ip"			=>	test,	//optional
-					//			"notes"				=>	test,	//optional
-					];
-	/**/
-	public function automation_report($params)
-	{
-		$URI = API_REPORTING_URL_DEV;											//api to hit e911 raw DB
-		$response = \Httpful\Request::post($URI)								//Build a GET request...
-								->authenticateWith(LDAP_USER, LDAP_PASS)		//basic authentication
-								->body($params)									//parameters to send in body
-								->sendsType(\Httpful\Mime::FORM)				//we are sending basic forms
-								->send()										//execute the request
-								->body;											//only give us the body back
-		return $response;
+		$this->NM_ELINS = $this->NM_get_elins();				//populate a list of elins from netman
 	}
 
 	/*
@@ -79,8 +51,8 @@ class EGWSYNC
         (
             [zip] => V5C 0G5
             [u_street_2] => 
-            [street] => 123 Fast Creek Drive
-            [name] => XXXXXXXX
+            [street] => 310-4350 Still Creek Drive
+            [name] => WCDBCVAN
             [state] => BC
             [sys_id] => 11ccf5b16ffb020034cb07321c3ee4b1
             [country] => CA
@@ -106,18 +78,18 @@ class EGWSYNC
 	}
 
 	/*
-	returns array of active switches from Network Management Platform
+	returns array of active switches from netman
 
     [wscganorswd01] => Array
         (
             [id] => 39716
-            [name] => xxxxxxxxswd01
-            [ip] => 10.5.5.1
+            [name] => wscganorswd01
+            [ip] => 10.131.159.1
             [snmploc] => Array
                 (
-                    [site] => xxxxxxxx
-                    [erl] => xxxxxxxx
-                    [desc] => xxxxxxxx
+                    [site] => WSCGANOR
+                    [erl] => WSCGANOR
+                    [desc] => WSCGANOR
                 )
 
         )
@@ -186,11 +158,11 @@ class EGWSYNC
     [WCDBCVAN] => Array
         (
             [id] => 741
-            [name] => xxxxxxxx
-            [street] => FAST CREEK DRIVE
-            [hno] => 123
+            [name] => WCDBCVAN
+            [street] => STILL CREEK DRIVE
+            [hno] => 310-4350
             [prd] => 
-            [rd] => FAST CREEK DRIVE
+            [rd] => STILL CREEK DRIVE
             [sts] => 
             [city] => BURNABY
             [state] => BC
@@ -198,7 +170,7 @@ class EGWSYNC
             [country] => CAN
             [custname] => WCDBCVAN
             [loc] => 
-            [elins] => 1231231234
+            [elins] => 5316006614
         )
 	/**/
 	public function E911_get_erls(){
@@ -238,12 +210,12 @@ class EGWSYNC
 	}
 
 	/*
-	returns array of elins from Network Management platform
+	returns array of switches from e911 appliance
 
     [991604] => Array
         (
             [id] => 991604
-            [number] => 1231231234
+            [number] => 5316006699
             [parent] => 991504
             [name] => Available
         )
@@ -347,13 +319,13 @@ class EGWSYNC
 	}
 
 	/*
-	returns array of switch names that need to be added to e911 appliance (active in Network Management Platform)
+	returns array of switch names that need to be added to e911 appliance (active in netman)
 	/**/
 	public function switches_to_add(){
 		if($this->E911_SWITCHES){		//if there are any E911 switches
 			$switchdiff = array_keys(array_diff_key($this->NM_SWITCHES,$this->E911_SWITCHES));	//compare NM SWITCHES to E911 SWITCHES and create an array of switch names
 		} else {							//if there are no switches in E911 appliance
-			$switchdiff = array_keys($this->NM_SWITCHES);		//add ALL switches in Network Management Platform to array
+			$switchdiff = array_keys($this->NM_SWITCHES);		//add ALL netman switches to array
 		}
 		
 		//print_r($switchdiff);
@@ -399,7 +371,7 @@ class EGWSYNC
 	}
 
 	/*
-	returns array of switch names that need to be removed from the e911 appliance (inactive in Network Management Platform)
+	returns array of switch names that need to be removed from the e911 appliance (inactive in netman)
 	/**/
 	public function switches_to_remove(){
 		//compare E911 switches to NM Switches, return the differences
