@@ -65,7 +65,6 @@ class EGWSYNC
 
 	public function automation_report($params)
 	{
-		print "REPORTING!";
 		if(!$params){
 			$params = [];
 		}
@@ -83,7 +82,6 @@ class EGWSYNC
 						"notes"				=>	"A generic E911_EGW function as been completed",	//optional
 		];
 		$newparams = array_merge($baseparams, $params);
-		print_r($newparams);
 		$URI = API_REPORTING_URL;											//api to hit e911 raw DB
 		$response = \Httpful\Request::post($URI)								//Build a GET request...
 								->authenticateWith(LDAP_USER, LDAP_PASS)		//basic authentication
