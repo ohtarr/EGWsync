@@ -345,7 +345,7 @@ class EGWSYNC
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][country]),		strtoupper($erl[country])))							||					
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][u_street_2]),	strtoupper($erl[loc])))								||
 					!empty(strcmp(strtoupper($erlelin),									strtoupper($erl[elins])))){							
-/*
+
 						print "****************************NO MATCH! ********************************\n";
 						print "ERL: " . $erlname . "\n";
 						print strtoupper($this->SNOW_LOCS[$erlname][street])	. "=" . strtoupper($erl[hno] . " " . $erl[street])	. "\n";
@@ -443,6 +443,7 @@ class EGWSYNC
 				$starttime = date('Y/m/d H:i:s');
 				//print "ERL to ADD: " . $locname . "\n";
 				unset($erlelinid);
+				unset($ELINS);
 				if($this->SNOW_LOCS[$locname][country] == "CAN"){
 					foreach($this->NM_ELINS as $elinid => $elin){		//loop through all elins
 						if ($elin[name] == $locname){					//if an elin exists with the name of the erl
@@ -478,7 +479,9 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
@@ -522,7 +525,7 @@ class EGWSYNC
 					if($erlelinid){									//if we found an existing elin assigned to this erl
 						//print "We found a matching ELIN! \n";
 						$ELINS = $this->NM_ELINS[$erlelinid][number];		//assign the elin number to the EGW adderl call.
-					} elseif ($this->SNOW_LOCS[$locname][country] == "CA" || $this->SNOW_LOCS[$locname][country] == "CAN"){										//if no existing elin is assigned to this erl
+					} elseif ($this->SNOW_LOCS[$locname][country] == "CAN"){										//if no existing elin is assigned to this erl
 						//assign a new elin in NM DB
 						//print "No matching ELINs, we are going to find an available elin \n";
 						foreach($this->NM_ELINS as $elinid => $elin){	//loop through all elins
@@ -549,7 +552,9 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
@@ -584,7 +589,9 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->deleteERL($erlname);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
@@ -626,7 +633,9 @@ class EGWSYNC
 					$RESULT = $EGW->add_switch($ADD_SWITCH);
 					//print_r($RESULT);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
@@ -668,7 +677,9 @@ class EGWSYNC
 				try {
 					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
@@ -704,7 +715,9 @@ class EGWSYNC
 				try {
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
+					print "\n";
 					print $e;
+					print "\n";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
