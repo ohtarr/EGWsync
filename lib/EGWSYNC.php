@@ -345,7 +345,7 @@ class EGWSYNC
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][country]),		strtoupper($erl[country])))							||					
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][u_street_2]),	strtoupper($erl[loc])))								||
 					!empty(strcmp(strtoupper($erlelin),									strtoupper($erl[elins])))){							
-
+/*
 						print "****************************NO MATCH! ********************************\n";
 						print "ERL: " . $erlname . "\n";
 						print strtoupper($this->SNOW_LOCS[$erlname][street])	. "=" . strtoupper($erl[hno] . " " . $erl[street])	. "\n";
@@ -443,7 +443,7 @@ class EGWSYNC
 				$starttime = date('Y/m/d H:i:s');
 				//print "ERL to ADD: " . $locname . "\n";
 				unset($erlelinid);
-				if($this->SNOW_LOCS[$locname][country] == "CA"){
+				if($this->SNOW_LOCS[$locname][country] == "CAN"){
 					foreach($this->NM_ELINS as $elinid => $elin){		//loop through all elins
 						if ($elin[name] == $locname){					//if an elin exists with the name of the erl
 							//print "Matches ELIN: " . $elin[id] . "\n";
@@ -509,25 +509,25 @@ class EGWSYNC
 
 			foreach($moderls as $locname){		//loop through erls that need to be added
 				$starttime = date('Y/m/d H:i:s');
-				print "ERL to MODIFY: " . $locname . "\n";
+				//print "ERL to MODIFY: " . $locname . "\n";
 				unset($erlelinid);
 				unset($ELINS);
 					foreach($this->NM_ELINS as $elinid => $elin){		//loop through all elins
 						if ($elin[name] == $locname){					//if an elin exists with the name of the erl
-							print "Matches ELIN: " . $elin[id] . "\n";
+							//print "Matches ELIN: " . $elin[id] . "\n";
 							$erlelinid = $elin[id];							//assign elin ID to variable for later use
 							break;											//no need to loop any further
 						}
 					}
 					if($erlelinid){									//if we found an existing elin assigned to this erl
-						print "We found a matching ELIN! \n";
+						//print "We found a matching ELIN! \n";
 						$ELINS = $this->NM_ELINS[$erlelinid][number];		//assign the elin number to the EGW adderl call.
 					} elseif ($this->SNOW_LOCS[$locname][country] == "CA" || $this->SNOW_LOCS[$locname][country] == "CAN"){										//if no existing elin is assigned to this erl
 						//assign a new elin in NM DB
-						print "No matching ELINs, we are going to find an available elin \n";
+						//print "No matching ELINs, we are going to find an available elin \n";
 						foreach($this->NM_ELINS as $elinid => $elin){	//loop through all elins
 							if ($elin[name] == "Available"){			//find the first elin called "Available"
-								print "ELIN " . $elin[id] . " is Available! assigned erl \n";
+								//print "ELIN " . $elin[id] . " is Available! assigned erl \n";
 								$DID = \Information::retrieve($elinid);		//grab the elin from NM
 								$DID->data['name'] = $locname;				//modify the name to erl name
 								$DID->update();								//save to DB
@@ -635,7 +635,7 @@ class EGWSYNC
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
 								"description"		=>	"E911_EGWSYNC_add_switches: {$switchname}",	//optional
-								"notes"				=>	"Removed ERL {$switchname} from the E911_EGW.",													//optional
+								"notes"				=>	"Added switch {$switchname} to the E911_EGW.",													//optional
 					];
 					$this->automation_report($params);
 				}
@@ -670,6 +670,17 @@ class EGWSYNC
 				} catch (\Exception $e) {
 					print $e;
 				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGWSYNC_modify_switches: {$switchname}",	//optional
+								"notes"				=>	"Modified switch {$switchname} in the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
+				}
 			}
 		}
 	}
@@ -694,6 +705,17 @@ class EGWSYNC
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
 					print $e;
+				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGWSYNC_remove_switches: {$switchname}",	//optional
+								"notes"				=>	"Removed switch {$switchname} from the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
 				}
 			}
 		}
