@@ -62,14 +62,19 @@ class EGWSYNC
 					//			"notes"				=>	test,	//optional
 					];
 	/**/
+
 	public function automation_report($params)
 	{
+		print "REPORTING!";
+		if(!$params){
+			$params = [];
+		}
 		$baseparams = [	"origin_hostname"	=>	"netman",
 						"processname"		=>	"E911_EGWSYNC",
 						"category"			=>	"Network",
 						"timesaved"			=>	"5",
-						"datestarted"		=>	$starttime,
-						"datefinished"		=>	$endtime,
+						"datestarted"		=>	date('Y/m/d H:i:s'),
+						"datefinished"		=>	date('Y/m/d H:i:s'),
 						"success"			=>	"1",
 						"target_hostname"	=>	"E911_EGW",											//optional
 						"triggeredby"		=>	"netman",											//optional
@@ -78,7 +83,7 @@ class EGWSYNC
 						"notes"				=>	"A generic E911_EGW function as been completed",	//optional
 		];
 		$newparams = array_merge($baseparams, $params);
-
+		print_r($newparams);
 		$URI = API_REPORTING_URL;											//api to hit e911 raw DB
 		$response = \Httpful\Request::post($URI)								//Build a GET request...
 								->authenticateWith(LDAP_USER, LDAP_PASS)		//basic authentication
