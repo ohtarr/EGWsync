@@ -62,12 +62,30 @@ class EGWSYNC
 					//			"notes"				=>	test,	//optional
 					];
 	/**/
+
 	public function automation_report($params)
 	{
-		$URI = API_REPORTING_URL_DEV;											//api to hit e911 raw DB
+		if(!$params){
+			$params = [];
+		}
+		$baseparams = [	"origin_hostname"	=>	"netman",
+						"processname"		=>	"E911_EGWSYNC",
+						"category"			=>	"Network",
+						"timesaved"			=>	"5",
+						"datestarted"		=>	date('Y/m/d H:i:s'),
+						"datefinished"		=>	date('Y/m/d H:i:s'),
+						"success"			=>	"1",
+						"target_hostname"	=>	"E911_EGW",											//optional
+						"triggeredby"		=>	"netman",											//optional
+						"description"		=>	"Netman E911_EGWSYNC function completed",			//optional
+						"target_ip"			=>	"10.123.123.70",									//optional
+						"notes"				=>	"A generic E911_EGW function as been completed",	//optional
+		];
+		$newparams = array_merge($baseparams, $params);
+		$URI = API_REPORTING_URL;											//api to hit e911 raw DB
 		$response = \Httpful\Request::post($URI)								//Build a GET request...
 								->authenticateWith(LDAP_USER, LDAP_PASS)		//basic authentication
-								->body($params)									//parameters to send in body
+								->body($newparams)									//parameters to send in body
 								->sendsType(\Httpful\Mime::FORM)				//we are sending basic forms
 								->send()										//execute the request
 								->body;											//only give us the body back
@@ -422,6 +440,7 @@ class EGWSYNC
 												E911_SOAP_PASS);
 
 			foreach($adderls as $locname){		//loop through erls that need to be added
+				$starttime = date('Y/m/d H:i:s');
 				//print "ERL to ADD: " . $locname . "\n";
 				unset($erlelinid);
 				if($this->SNOW_LOCS[$locname][country] == "CA"){
@@ -460,7 +479,17 @@ class EGWSYNC
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n***************************************************************************CATCH!\n";
+				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGW_add_erls: {$this->SNOW_LOCS[$locname][name]}",	//optional
+								"notes"				=>	"Added new ERL {$this->SNOW_LOCS[$locname][name]} to the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
 				}
 			}
 		}
@@ -479,6 +508,7 @@ class EGWSYNC
 												E911_SOAP_PASS);
 
 			foreach($moderls as $locname){		//loop through erls that need to be added
+				$starttime = date('Y/m/d H:i:s');
 				print "ERL to MODIFY: " . $locname . "\n";
 				unset($erlelinid);
 				unset($ELINS);
@@ -520,7 +550,17 @@ class EGWSYNC
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n***************************************************************************CATCH!\n";
+				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGWSYNC_modify_erls: {$this->SNOW_LOCS[$locname][name]}",	//optional
+								"notes"				=>	"Modified ERL {$this->SNOW_LOCS[$locname][name]} in the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
 				}
 			}
 		}
@@ -538,13 +578,24 @@ class EGWSYNC
 												E911_SOAP_USER,
 												E911_SOAP_PASS);
 			foreach($remerls as $erlname){		//loop through erl names
+				$starttime = date('Y/m/d H:i:s');
 				//print $erlname;
 				//hit the EGW API and attempt to delete the erl
 				try{
 					$RESULT = $EGW->deleteERL($erlname);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n CATCH! \n";
+				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGWSYNC_remove_erls: {$erlname}",	//optional
+								"notes"				=>	"Removed ERL {$erlname} from the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
 				}
 			}
 		}
@@ -563,6 +614,7 @@ class EGWSYNC
 												E911_SOAP_PASS);
 
 			foreach($addswitches as $switchname){				//loop through switches
+				$starttime = date('Y/m/d H:i:s');
 				//print "SWITCH: " . $switchname . " \n";
 				//build our EGW API paremeters array for the add_switch function
 				$ADD_SWITCH = array("switch_ip"				=>	$this->NM_SWITCHES[$switchname][ip],
@@ -575,7 +627,17 @@ class EGWSYNC
 					//print_r($RESULT);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n CATCH! \n";
+				}
+				$endtime = date('Y/m/d H:i:s');
+				//LOG a successful automation to the automation log API
+				if($RESULT){
+					$params = [	"timesaved"			=>	"5",
+								"datestarted"		=>	$starttime,
+								"datefinished"		=>	$endtime,
+								"description"		=>	"E911_EGWSYNC_add_switches: {$switchname}",	//optional
+								"notes"				=>	"Removed ERL {$switchname} from the E911_EGW.",													//optional
+					];
+					$this->automation_report($params);
 				}
 			}
 		}
@@ -594,6 +656,7 @@ class EGWSYNC
 												E911_SOAP_PASS);
 
 			foreach($modswitches as $switchname){		//loop through the switches
+				$starttime = date('Y/m/d H:i:s');
 				//setup our EGW parameters
 				$UPDATE_SWITCH = array(
 					'switch_ip'						=>  $this->NM_SWITCHES[$switchname][ip],
@@ -606,7 +669,6 @@ class EGWSYNC
 					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n CATCH! \n";
 				}
 			}
 		}
@@ -626,12 +688,12 @@ class EGWSYNC
 												E911_SOAP_PASS);
 
 			foreach($remswitches as $switchname){		//loop through switches
+				$starttime = date('Y/m/d H:i:s');
 				//attempt to delete the switch through EGW API
 				try {
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
 					print $e;
-					print "\n CATCH! \n";
 				}
 			}
 		}
