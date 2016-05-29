@@ -2,15 +2,10 @@
     "name": "ohtarr/E911",
     "type": "library",
 	"repositories": [
-	{
-		"type": "vcs",
-		"url": "https://github.com/ohtarr/E911.git"
-	},
         {
 		"type": "vcs",
 		"url": "https://github.com/iahunter/php-911enable-egw.git"
-        },
-
+        }
 ],
     "description": "PHP Utility Library",
     "keywords": [
