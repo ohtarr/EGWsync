@@ -480,12 +480,12 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
-					$DB->log("E911 add_erls $this->SNOW_LOCS[$locname][name] failed with exception: $e");
+					$DB->log("E911 add_erls {$this->SNOW_LOCS[$locname][name]} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 add_erls $this->SNOW_LOCS[$locname][name] succeeded!");
+					$DB->log("E911 add_erls {$this->SNOW_LOCS[$locname][name]} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -553,12 +553,12 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
-					$DB->log("E911 modify_erls $this->SNOW_LOCS[$locname][name] failed with exception: $e");
+					$DB->log("E911 modify_erls {$this->SNOW_LOCS[$locname][name]} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 modify_erls $this->SNOW_LOCS[$locname][name] succeeded!");
+					$DB->log("E911 modify_erls {$this->SNOW_LOCS[$locname][name]} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -590,12 +590,12 @@ class EGWSYNC
 				try{
 					$RESULT = $EGW->deleteERL($erlname);
 				} catch (\Exception $e) {
-					$DB->log("E911 remove_erls $erlname failed with exception: $e");
+					$DB->log("E911 remove_erls {$erlname} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 remove_erls $erlname succeeded!");
+					$DB->log("E911 remove_erls {$erlname} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -634,12 +634,12 @@ class EGWSYNC
 					$RESULT = $EGW->add_switch($ADD_SWITCH);
 					//print_r($RESULT);
 				} catch (\Exception $e) {
-					$DB->log("E911 add_switch $switchname failed with exception: $e");
+					$DB->log("E911 add_switch {$switchname} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 add_switch $switchname succeeded!");
+					$DB->log("E911 add_switch {$switchname} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -678,12 +678,12 @@ class EGWSYNC
 				try {
 					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
 				} catch (\Exception $e) {
-					$DB->log("E911 update_switch $switchname failed with exception: $e");
+					$DB->log("E911 update_switch {$switchname} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 update_switch $switchname succeeded!");
+					$DB->log("E911 update_switch {$switchname} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -716,12 +716,12 @@ class EGWSYNC
 				try {
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
-					$DB->log("E911 delete_switch $this->E911_SWITCHES[$switchname] failed with exception: $e");
+					$DB->log("E911 delete_switch {$this->E911_SWITCHES[$switchname]} failed with exception: $e");
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$DB->log("E911 delete_switch $this->E911_SWITCHES[$switchname] succeeded!");
+					$DB->log("E911 delete_switch {$this->E911_SWITCHES[$switchname]} succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
