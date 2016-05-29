@@ -345,7 +345,7 @@ class EGWSYNC
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][country]),		strtoupper($erl[country])))							||					
 					!empty(strcmp(strtoupper($this->SNOW_LOCS[$erlname][u_street_2]),	strtoupper($erl[loc])))								||
 					!empty(strcmp(strtoupper($erlelin),									strtoupper($erl[elins])))){							
-
+/*
 						print "****************************NO MATCH! ********************************\n";
 						print "ERL: " . $erlname . "\n";
 						print strtoupper($this->SNOW_LOCS[$erlname][street])	. "=" . strtoupper($erl[hno] . " " . $erl[street])	. "\n";
@@ -431,6 +431,7 @@ class EGWSYNC
 	add all erls that are returned from erls_to_add()
 	/**/
 	public function add_erls(){
+		global $DB;
 		$adderls = $this->erls_to_add();			//get our list of ERLS that need to be added
 		if ($adderls){								//if there are any ERLs that need to be added
 			//setup our E911 api call
@@ -484,6 +485,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 add_erls $this->SNOW_LOCS[$locname][name] succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -500,6 +502,7 @@ class EGWSYNC
 	modify all erls that are returned from erls_to_modify()
 	/**/
 	public function modify_erls(){
+		global $DB;
 		$moderls = $this->erls_to_modify();		//get our list of erl names that need to be modified
 		if ($moderls){							//if we have anything in our list
 			//setup the EGW api call
@@ -555,6 +558,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 modify_erls $this->SNOW_LOCS[$locname][name] succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -571,6 +575,7 @@ class EGWSYNC
 	remove all erls that are returned from erls_to_remove()
 	/**/
 	public function remove_erls(){
+		global $DB;
 		$remerls = $this->erls_to_remove();			//get our list of erl names that need to be removed
 		if($remerls){								//if the list is not empty
 			//setup our EGW API call
@@ -590,6 +595,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 remove_erls $erlname succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -606,6 +612,7 @@ class EGWSYNC
 	add all switches that are returned from switches_to_add()
 	/**/
 	public function add_switches(){
+		global $DB;		
 		$addswitches = $this->switches_to_add();		//get a list of switchnames that need to be added
 		if($addswitches){								//if our list is not empty
 			//setup the EGW API call
@@ -632,6 +639,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 add_switch $switchname succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -648,6 +656,7 @@ class EGWSYNC
 	modify all switches that are returned from switches_to_modify()
 	/**/
 	public function modify_switches(){
+		global $DB;
 		$modswitches = $this->switches_to_modify();				//get our list of switch names that need to be modified
 		if($modswitches){										//if the list is not empty
 			//setup our EGW API call
@@ -674,6 +683,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 update_switch $switchname succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -690,6 +700,7 @@ class EGWSYNC
 	remove all switches that are returned from switches_to_remove()
 	/**/
 	public function remove_switches(){
+		global $DB;
 		$remswitches = $this->switches_to_remove();				//get our list of switches that need to be removed
 		//print_r($remswitches);
 		if($remswitches){										//if our list is not empty
@@ -710,6 +721,7 @@ class EGWSYNC
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
+					$DB->log("E911 delete_switch $this->E911_SWITCHES[$switchname] succeeded!");
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
