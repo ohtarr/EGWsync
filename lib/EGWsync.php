@@ -38,11 +38,22 @@ class EGWsync
 
     public function __construct()
 	{
+		global $DB;
 		$this->NM_SWITCHES = $this->Netman_get_switches();		//populate array of switches from Network Management Platform
 		$this->E911_SWITCHES = $this->E911_get_switches();		//populate array of switches from E911 Appliance
 		$this->E911_ERLS = $this->E911_get_erls();				//populate list of ERLs from E911 Appliance
 		$this->SNOW_LOCS = $this->Snow_get_valid_locations();	//populate a list of locations from SNOW
 		$this->NM_ELINS = $this->NM_get_elins();				//populate a list of elins from Network Management Platform
+		if (empty($this->NM_SWITCHES)		||
+			empty($this->E911_SWITCHES)		||
+			empty($this->E911_ERLS)			||
+			empty($this->SNOW_LOCS)			||
+			empty($this->NM_ELINS)
+			)
+		{
+			$DB->log("EGWsync failed: 1 or more data sources are empty!");
+			exit();
+		}
 	}
 
 	/*
@@ -404,11 +415,11 @@ class EGWsync
 				//if the IP and ERL name in E911 switch no longer match NM IP and ERL name
 				if (!empty(strcmp(strtoupper($this->NM_SWITCHES[$switchname][ip]),				strtoupper($switch[ip])))		||
 					!empty(strcmp(strtoupper($this->NM_SWITCHES[$switchname][snmploc][erl]),	strtoupper($switcherlname)))){							
-						//print "****************************NO MATCH! ********************************\n";
-						//print "SWITCH: " . $switchname . "\n";
-						//print strtoupper($this->NM_SWITCHES[$switchname][ip])				. "=" . strtoupper($switch[ip])		. "\n";
-						//print strtoupper($this->NM_SWITCHES[$switchname][snmploc][erl])		. "=" . strtoupper($switcherlname)	. "\n";
-						//print "****************************NO MATCH! ********************************\n";
+						print "****************************NO MATCH! ********************************\n";
+						print "SWITCH: " . $switchname . "\n";
+						print strtoupper($this->NM_SWITCHES[$switchname][ip])				. "=" . strtoupper($switch[ip])		. "\n";
+						print strtoupper($this->NM_SWITCHES[$switchname][snmploc][erl])		. "=" . strtoupper($switcherlname)	. "\n";
+						print "****************************NO MATCH! ********************************\n";
 						$modify_switches[] = $switchname;		//add switch to new array
 				}
 			}
