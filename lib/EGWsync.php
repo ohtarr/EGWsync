@@ -28,7 +28,7 @@
  */
 namespace ohtarr;
 
-class EGWSYNC
+class EGWsync
 {
 	public $NM_SWITCHES;		//array of switches from Network Management Platform
 	public $NM_ELINS;			//array of elins from Network Management Platform
