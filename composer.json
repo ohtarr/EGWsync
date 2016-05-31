@@ -1,5 +1,5 @@
 {
-    "name": "ohtarr/E911",
+    "name": "ohtarr/EGWsync",
     "type": "library",
 	"repositories": [
         {
@@ -13,7 +13,7 @@
         "E911",
 	"EGW"
         ],
-    "homepage": "https://github.com/ohtarr/E911",
+    "homepage": "https://github.com/ohtarr/EGWsync",
     "license": "LGPL3.0",
     "authors": [
         {
