@@ -314,7 +314,10 @@ class EGWsync
 	/**/
 	public function erls_to_add(){
 		$erlstoadd = array_diff_key($this->SNOW_LOCS,$this->E911_ERLS);		//compare SNOW_LOCS to E911_ERLS, we are left with the differences
-		return array_keys($erlstoadd);					//return an array of ERL NAMES
+		$erlstoadd = array_keys($erlstoadd);
+		if (!empty($erlstoadd)){
+			return $erlstoadd;					//return an array of ERL NAMES
+		}
 	}
 
 	/*
@@ -343,7 +346,10 @@ class EGWsync
 		}
 		//print "dellall= \n";
 		//print_r($dellall);
-		return array_values(array_unique($dellall));				//return an array of ERL NAMES
+		$dellall = array_values(array_unique($dellall));
+		if(!empty($dellall)){
+			return $dellall;				//return an array of ERL NAMES
+		}
 	}
 
 	/*
@@ -383,7 +389,9 @@ class EGWsync
 				}
 			}
 		}
-		return $modify_erls;				//return our list to modify
+		if (!empty($modify_erls)){
+			return $modify_erls;				//return our list to modify
+		}
 	}
 
 	/*
@@ -407,7 +415,9 @@ class EGWsync
 				}
 			}
 		}
-		return $switchestoadd;				//return new array
+		if (!empty($switchestoadd)){
+			return $switchestoadd;				//return new array
+		}
 	}
 
 	/*
@@ -435,7 +445,9 @@ class EGWsync
 				}
 			}
 		}
-		return $modify_switches;			//return new array
+		if (!empty($modify_switches)){
+			return $modify_switches;			//return new array
+		}
 	}
 
 	/*
@@ -443,9 +455,10 @@ class EGWsync
 	/**/
 	public function switches_to_remove(){
 		//compare E911 switches to NM Switches, return the differences
-		$switchestoremove = array_diff_key($this->E911_SWITCHES,$this->NM_SWITCHES);
-		if (!empty(array_keys($switchestoremove))){
-			return array_keys($switchestoremove);		//return array of switch names
+		$switchestoremove = array_keys(array_diff_key($this->E911_SWITCHES,$this->NM_SWITCHES));
+		
+		if (!empty($switchestoremove)){
+			return $switchestoremove;		//return array of switch names
 		}
 	}
 
