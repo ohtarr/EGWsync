@@ -343,7 +343,7 @@ class EGWsync
 		}
 		//print "dellall= \n";
 		//print_r($dellall);
-		return array_unique($dellall);				//return an array of ERL NAMES
+		return array_values(array_unique($dellall));				//return an array of ERL NAMES
 	}
 
 	/*
@@ -744,12 +744,12 @@ class EGWsync
 				try {
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
-					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname]}] failed with exception: {$e->getMessage()}, ";
+					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname][name]}] failed with exception: {$e->getMessage()}, ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname]}] succeeded! ";
+					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname][name]}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
