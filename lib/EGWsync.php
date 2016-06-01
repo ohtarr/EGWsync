@@ -334,6 +334,7 @@ class EGWsync
 		//print "deldeferls: \n";
 		//print_r($deldeferls);
 		foreach($deldeferls as $deferl){
+			$dellall[] = $deferl;
 			foreach($this->E911_ERLS as $erlname=>$erl){
 				if(substr($erlname, 0, 8) == $deferl){
 					$dellall[] = $erlname;
@@ -342,7 +343,7 @@ class EGWsync
 		}
 		//print "dellall= \n";
 		//print_r($dellall);
-		return $dellall;				//return an array of ERL NAMES
+		return array_unique($dellall);				//return an array of ERL NAMES
 	}
 
 	/*
