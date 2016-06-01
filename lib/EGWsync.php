@@ -35,11 +35,11 @@ class EGWsync
 	public $E911_SWITCHES;		//array of switches from e911 appliance
 	public $E911_ERLS;			//array of ERLs from e911 appliance
 	public $SNOW_LOCS;			//array of locations from SNOW
+	public $logmsg;
 
     public function __construct()
 	{
 		global $DB;
-		$logmsg = "";
 		$this->NM_SWITCHES = $this->Netman_get_switches();		//populate array of switches from Network Management Platform
 		$this->E911_SWITCHES = $this->E911_get_switches();		//populate array of switches from E911 Appliance
 		$this->E911_ERLS = $this->E911_get_erls();				//populate list of ERLs from E911 Appliance
@@ -56,7 +56,7 @@ class EGWsync
 			$DB->log("EGWsync failed: 1 or more data sources are empty!");
 			exit();
 		}
-		$DB->log($logmsg);
+		$DB->log($this->logmsg);
 	}
 
 	/*
@@ -445,7 +445,7 @@ class EGWsync
 	add all erls that are returned from erls_to_add()
 	/**/
 	public function add_erls(){
-		$logmsg .= "ADD_ERLS: ";
+		$this->logmsg .= "ADD_ERLS: ";
 		global $DB;
 		$adderls = $this->erls_to_add();			//get our list of ERLS that need to be added
 		if ($adderls){								//if there are any ERLs that need to be added
@@ -495,12 +495,12 @@ class EGWsync
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e}, ";
+					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e}, ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! ";
+					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -517,7 +517,7 @@ class EGWsync
 	modify all erls that are returned from erls_to_modify()
 	/**/
 	public function modify_erls(){
-		$logmsg .= "MODIFY_ERLS: ";
+		$this->logmsg .= "MODIFY_ERLS: ";
 		global $DB;
 		$moderls = $this->erls_to_modify();		//get our list of erl names that need to be modified
 		if ($moderls){							//if we have anything in our list
@@ -569,12 +569,12 @@ class EGWsync
 				try{
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e}, ";
+					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e}, ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! ";
+					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -591,7 +591,7 @@ class EGWsync
 	remove all erls that are returned from erls_to_remove()
 	/**/
 	public function remove_erls(){
-		$logmsg .= "REMOVE_ERLS: ";
+		$this->logmsg .= "REMOVE_ERLS: ";
 		global $DB;
 		$remerls = $this->erls_to_remove();			//get our list of erl names that need to be removed
 		if($remerls){								//if the list is not empty
@@ -607,12 +607,12 @@ class EGWsync
 				try{
 					$RESULT = $EGW->deleteERL($erlname);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$erlname}] failed with exception: {$e}, ";
+					$this->logmsg .= "[{$erlname}] failed with exception: {$e}, ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$erlname}] succeeded! ";
+					$this->logmsg .= "[{$erlname}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -629,7 +629,7 @@ class EGWsync
 	add all switches that are returned from switches_to_add()
 	/**/
 	public function add_switches(){
-		$logmsg .= "ADD_SWITCHES: ";
+		$this->logmsg .= "ADD_SWITCHES: ";
 		global $DB;		
 		$addswitches = $this->switches_to_add();		//get a list of switchnames that need to be added
 		if($addswitches){								//if our list is not empty
@@ -652,12 +652,12 @@ class EGWsync
 					$RESULT = $EGW->add_switch($ADD_SWITCH);
 					//print_r($RESULT);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$switchname}] failed with exception: {$e} ";
+					$this->logmsg .= "[{$switchname}] failed with exception: {$e} ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$switchname}] succeeded! ";
+					$this->logmsg .= "[{$switchname}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -674,7 +674,7 @@ class EGWsync
 	modify all switches that are returned from switches_to_modify()
 	/**/
 	public function modify_switches(){
-		$logmsg .= "MODIFY_SWITCHES: ";
+		$this->logmsg .= "MODIFY_SWITCHES: ";
 		global $DB;
 		$modswitches = $this->switches_to_modify();				//get our list of switch names that need to be modified
 		if($modswitches){										//if the list is not empty
@@ -697,12 +697,12 @@ class EGWsync
 				try {
 					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$switchname}] failed with exception: {$e}. ";
+					$this->logmsg .= "[{$switchname}] failed with exception: {$e}. ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$switchname}] succeeded! ";
+					$this->logmsg .= "[{$switchname}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -719,7 +719,7 @@ class EGWsync
 	remove all switches that are returned from switches_to_remove()
 	/**/
 	public function remove_switches(){
-		$logmsg .= "REMOVE_SWITCHES: ";
+		$this->logmsg .= "REMOVE_SWITCHES: ";
 		global $DB;
 		$remswitches = $this->switches_to_remove();				//get our list of switches that need to be removed
 		//print_r($remswitches);
@@ -736,12 +736,12 @@ class EGWsync
 				try {
 					$RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
 				} catch (\Exception $e) {
-					$logmsg .= "[{$this->E911_SWITCHES[$switchname]}] failed with exception: {$e}, ";
+					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname]}] failed with exception: {$e}, ";
 				}
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$logmsg .= "[{$this->E911_SWITCHES[$switchname]}] succeeded! ";
+					$this->logmsg .= "[{$this->E911_SWITCHES[$switchname]}] succeeded! ";
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
