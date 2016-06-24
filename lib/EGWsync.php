@@ -509,7 +509,7 @@ class EGWsync
 					}
 				}
 				//send the address information through the Address class to parse out house number and street name
-				$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], $this->SNOW_LOCS[$locname][name]);
+				$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], "Kiewit");
 				//add the STREET2 information
 				$ADDRESS->LOC = $this->SNOW_LOCS[$locname][u_street_2];
 				//hit the EGW api to attempt to add the erl
