@@ -205,7 +205,7 @@ class EGWsync
 		//print $URI;
 		$E911_switches = \Httpful\Request::get($URI)								//Build a GET request...
 								->expectsJson()										//we expect JSON back from the api
-								->parseWith("\\metaclassing\\Utility::decodeJson")	//Parse and convert to an array with our own parser, rather than the default httpful parser
+								->parseWith("\\Metaclassing\\Utility::decodeJson")	//Parse and convert to an array with our own parser, rather than the default httpful parser
 								->send()											//send the request.
 								->body;											
 		foreach($E911_switches as $key => $switch){						//loop through each switch returned
@@ -244,7 +244,7 @@ class EGWsync
 		$URI = BASEURL . "/api/911-get-locations.php";				//api to hit e911 raw database
 		$E911_erls = \Httpful\Request::get($URI)									//Build a GET request...
 								->expectsJson()										//we expect JSON back from the api
-								->parseWith("\\metaclassing\\Utility::decodeJson")	//Parse and convert to an array with our own parser, rather than the default httpful parser
+								->parseWith("\\Metaclassing\\Utility::decodeJson")	//Parse and convert to an array with our own parser, rather than the default httpful parser
 								->send()											//send the request.
 								->body;	
 
