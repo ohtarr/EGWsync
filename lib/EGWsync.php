@@ -508,12 +508,12 @@ class EGWsync
 						}
 					}
 				}
-				//send the address information through the Address class to parse out house number and street name
-				$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], "Kiewit");
-				//add the STREET2 information
-				$ADDRESS->LOC = $this->SNOW_LOCS[$locname][u_street_2];
-				//hit the EGW api to attempt to add the erl
 				try{
+					//send the address information through the Address class to parse out house number and street name
+					$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], "Kiewit");
+					//add the STREET2 information
+					$ADDRESS->LOC = $this->SNOW_LOCS[$locname][u_street_2];
+					//hit the EGW api to attempt to add the erl
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
 					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e->getMessage()}, ";
@@ -583,11 +583,11 @@ class EGWsync
 
 				//print_r($this->SNOW_LOCS[$locname]);
 				//feed our address information into the Address class to parse house number and street address
-				$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], $this->SNOW_LOCS[$locname][name]);
-				//add STREET2 information
-				$ADDRESS->LOC = $this->SNOW_LOCS[$locname][u_street_2];
-				//attempt to update this erl using the addERL function in the EGW API
 				try{
+					$ADDRESS = \EmergencyGateway\Address::fromString($this->SNOW_LOCS[$locname][street], $this->SNOW_LOCS[$locname][city], $this->SNOW_LOCS[$locname][state], $this->SNOW_LOCS[$locname][country], $this->SNOW_LOCS[$locname][zip], $this->SNOW_LOCS[$locname][name]);
+					//add STREET2 information
+					$ADDRESS->LOC = $this->SNOW_LOCS[$locname][u_street_2];
+					//attempt to update this erl using the addERL function in the EGW API
 					$RESULT = $EGW->addERL($this->SNOW_LOCS[$locname][name], (array) $ADDRESS, $ELINS);
 				} catch (\Exception $e) {
 					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] failed with exception: {$e->getMessage()}, ";
