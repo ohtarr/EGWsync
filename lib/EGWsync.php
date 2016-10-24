@@ -478,6 +478,7 @@ class EGWsync
 
 			foreach($adderls as $locname){		//loop through erls that need to be added
 				$starttime = date('Y/m/d H:i:s');
+				unset($RESULT);
 				//print "ERL to ADD: " . $locname . "\n";
 				unset($erlelinid);
 				unset($ELINS);
@@ -714,9 +715,17 @@ class EGWsync
 					'switch_description'			=>	$switchname,
 					'switch_vendor'					=>	"cisco",
 				);
+                $ADD_SWITCH = array(
+					"switch_ip"             =>  $this->NM_SWITCHES[$switchname][ip],
+					"switch_vendor"         =>  "Cisco",
+					"switch_erl"            =>  $this->NM_SWITCHES[$switchname][snmploc][erl],
+					"switch_description"    =>  $this->NM_SWITCHES[$switchname][name],
+				);
 				//attempt to update the switch via the EGW api
 				try {
-					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
+					//$RESULT = $EGW->update_switch($UPDATE_SWITCH);
+                    $RESULT = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip]);
+                    $RESULT = $EGW->add_switch($ADD_SWITCH);
 				} catch (\Exception $e) {
 					$this->logmsg .= "[{$switchname}] failed with exception: {$e->getMessage()}. ";
 				}
