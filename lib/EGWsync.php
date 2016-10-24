@@ -478,6 +478,7 @@ class EGWsync
 
 			foreach($adderls as $locname){		//loop through erls that need to be added
 				$starttime = date('Y/m/d H:i:s');
+				unset($RESULT);
 				//print "ERL to ADD: " . $locname . "\n";
 				unset($erlelinid);
 				unset($ELINS);
@@ -521,7 +522,7 @@ class EGWsync
 				$endtime = date('Y/m/d H:i:s');
 				//LOG a successful automation to the automation log API
 				if($RESULT){
-					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! ";
+					$this->logmsg .= "[{$this->SNOW_LOCS[$locname][name]}] succeeded! " . $RESULT;
 					$params = [	"timesaved"			=>	"5",
 								"datestarted"		=>	$starttime,
 								"datefinished"		=>	$endtime,
@@ -551,6 +552,7 @@ class EGWsync
 			foreach($moderls as $locname){		//loop through erls that need to be added
 				$starttime = date('Y/m/d H:i:s');
 				//print "ERL to MODIFY: " . $locname . "\n";
+				unset($RESULT);
 				unset($erlelinid);
 				unset($ELINS);
 					foreach($this->NM_ELINS as $elinid => $elin){		//loop through all elins
@@ -706,17 +708,26 @@ class EGWsync
 												E911_SOAP_PASS);
 
 			foreach($modswitches as $switchname){		//loop through the switches
+				unset($RESULT1);
+				unset($RESULT2);
 				$starttime = date('Y/m/d H:i:s');
 				//setup our EGW parameters
-				$UPDATE_SWITCH = array(
-					'switch_ip'						=>  $this->NM_SWITCHES[$switchname][ip],
-					'switch_erl'					=>  $this->NM_SWITCHES[$switchname][snmploc][erl],
-					'switch_description'			=>	$switchname,
-					'switch_vendor'					=>	"cisco",
+                $ADD_SWITCH = array(
+					"switch_ip"             =>  $this->NM_SWITCHES[$switchname][ip],
+					"switch_vendor"         =>  "Cisco",
+					"switch_erl"            =>  $this->NM_SWITCHES[$switchname][snmploc][erl],
+					"switch_description"    =>  $this->NM_SWITCHES[$switchname][name],
 				);
 				//attempt to update the switch via the EGW api
 				try {
-					$RESULT = $EGW->update_switch($UPDATE_SWITCH);
+					if ($RESULT1 = $EGW->delete_switch($this->E911_SWITCHES[$switchname][ip])){
+
+						if(!$RESULT2 = $EGW->add_switch($ADD_SWITCH)){
+							throw new Exception("Failed to add new switch " . $switchname . " with message " . $RESULT2);
+						}
+					} else {
+						throw new Exception("Failed to remove switch " . $switchname . " with message " . $RESULT1);
+					}
 				} catch (\Exception $e) {
 					$this->logmsg .= "[{$switchname}] failed with exception: {$e->getMessage()}. ";
 				}
