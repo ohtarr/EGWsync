@@ -172,8 +172,8 @@ class EGWsync
 	
 		foreach($RESULTS as $OBJECTID){										//loop through switch ids returned
 			$DEVICE = \Information::retrieve($OBJECTID);					//returns entire object $OBJECTID
-			
-			$reg = "/^\D{5}\S{3}.*(sw[acdpi]|SW[ACDPI])[0-9]*$/";			//regex to match switches only
+			$reg = "/^\D{5}\S{3}.*(sw[acdpi]|SW[ACDPI])[0-9]+\S*$/";		//regex to match switches only
+			//$reg = "/^\D{5}\S{3}.*(sw[acdpi]|SW[ACDPI])[0-9]*$/";			//regex to match switches only
 			if (preg_match($reg,$DEVICE->data['name'], $hits)){				//if device name matches regex
 				$NMSNMP = $DEVICE->get_snmp_location();						//retrieve the snmp-server location from switch object
 				//build new array
