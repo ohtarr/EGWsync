@@ -258,7 +258,12 @@ class EGWsync
 			$E911_erl_array[$erl[erl_id]][id] 		= $erl[location_id];		
 			$E911_erl_array[$erl[erl_id]][name] 	= $erl[erl_id];
 			$E911_erl_array[$erl[erl_id]][street] 	= $erl[street_name];
-			$RESULT = $EGW->getERL($erl[erl_id]);
+			//Why hit EGW api when I have all the details from restful call above?
+			try{
+				$RESULT = $EGW->getERL($erl[erl_id]);
+			} catch (\Exception $e) {
+				print "[$erl[erl_id]] failed with exception: {$e->getMessage()}, ";
+			}
 			$params = get_object_vars($RESULT[civicAddress]);
 			$E911_erl_array[$erl[erl_id]][hno] 		= $params[HNO];
 			$E911_erl_array[$erl[erl_id]][prd] 		= $params[PRD];
