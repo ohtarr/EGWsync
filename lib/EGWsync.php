@@ -46,6 +46,7 @@ class EGWsync
 		$this->SNOW_LOCS = $this->Snow_get_valid_locations();	//populate a list of locations from SNOW
 		$this->NM_ELINS = $this->NM_get_elins();				//populate a list of elins from Network Management Platform
 
+/*
 		if (empty($this->NM_SWITCHES)		||
 			empty($this->E911_SWITCHES)		||
 			empty($this->E911_ERLS)			||
@@ -56,6 +57,7 @@ class EGWsync
 			$DB->log("EGWsync failed: 1 or more data sources are empty!");
 			exit();
 		}
+/**/
 	}
 
 	public function __destruct()
@@ -255,15 +257,21 @@ class EGWsync
 
 		foreach($E911_erls as $key => $erl){									//loop through erls from E911 appliance
 			//build our new array
-			$E911_erl_array[$erl[erl_id]][id] 		= $erl[location_id];		
+			$E911_erl_array[$erl[erl_id]][id] 		= $erl[location_id];
 			$E911_erl_array[$erl[erl_id]][name] 	= $erl[erl_id];
 			$E911_erl_array[$erl[erl_id]][street] 	= $erl[street_name];
 			//Why hit EGW api when I have all the details from restful call above?
-			try{
-				$RESULT = $EGW->getERL($erl[erl_id]);
-			} catch (\Exception $e) {
-				print "[$erl[erl_id]] failed with exception: {$e->getMessage()}, ";
+			if ($erl[erl_id]){
+				//print "[" . $erl[erl_id] . "]\n";
+				try{
+					$RESULT = $EGW->getERL($erl[erl_id]);
+				} catch (\Exception $e) {
+					print "[$erl[erl_id]] failed with exception: {$e->getMessage()}, ";
+				}
+			} else {
+				continue;
 			}
+			/**/
 			$params = get_object_vars($RESULT[civicAddress]);
 			$E911_erl_array[$erl[erl_id]][hno] 		= $params[HNO];
 			$E911_erl_array[$erl[erl_id]][prd] 		= $params[PRD];
