@@ -257,11 +257,11 @@ class EGWsync
 
 		foreach($E911_erls as $key => $erl){									//loop through erls from E911 appliance
 			//build our new array
-			$E911_erl_array[$erl[erl_id]][id] 		= $erl[location_id];
-			$E911_erl_array[$erl[erl_id]][name] 	= $erl[erl_id];
-			$E911_erl_array[$erl[erl_id]][street] 	= $erl[street_name];
-			//Why hit EGW api when I have all the details from restful call above?
 			if ($erl[erl_id]){
+				$E911_erl_array[$erl[erl_id]][id] 		= $erl[location_id];
+				$E911_erl_array[$erl[erl_id]][name] 	= $erl[erl_id];
+				$E911_erl_array[$erl[erl_id]][street] 	= $erl[street_name];
+				//Why hit EGW api when I have all the details from restful call above?
 				//print "[" . $erl[erl_id] . "]\n";
 				try{
 					$RESULT = $EGW->getERL($erl[erl_id]);
